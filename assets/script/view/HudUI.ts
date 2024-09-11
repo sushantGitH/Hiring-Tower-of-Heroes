@@ -2,6 +2,7 @@ import { _decorator, Component, Label } from 'cc';
 import { CoinViewModel } from '../viewModel/CoinViewModel';
 import { Coin } from '../model/Coin';
 import { Subscription } from 'rxjs';
+import { gameManager } from '../manager/GameManager';
 
 const { ccclass, property } = _decorator;
 
@@ -10,22 +11,18 @@ export class HudUI extends Component {
   @property(Label)
   currencyLabel: Label | null = null;
 
-  private viewModel!: CoinViewModel;
+  private coinViewModel!: CoinViewModel;
   private subscription!: Subscription;
 
-  // Method to set the ViewModel
-  setViewModel(viewModel: CoinViewModel) {
-    this.viewModel = viewModel;
-    this.subscribeToViewModel();
-  }
+  onLoad() {
+    // Access CoinViewModel from GameManager
+    this.coinViewModel = gameManager.coinViewModel;
 
-  private subscribeToViewModel() {
-    if (this.viewModel) {
-      this.subscription = this.viewModel.currentCurrency$.subscribe((currency) => {
-        if(this.currencyLabel !== null)
-          this.currencyLabel.string = currency.toString();
-      });
-    }
+    // Subscribe to the currency stream
+    this.subscription = this.coinViewModel.currentCurrency$.subscribe((currency) => {
+      if(this.currencyLabel)
+        this.currencyLabel.string = currency.toString();
+    });
   }
 
   onDestroy() {

@@ -6,6 +6,7 @@ import { Hero } from '../model/Hero';
 import { CoinViewModel } from '../viewModel/CoinViewModel';
 import { Coin } from '../model/Coin';
 import { HudUI } from './HudUI';
+import { gameManager } from '../manager/GameManager';
 
 const { ccclass, property } = _decorator;
 
@@ -42,20 +43,9 @@ export class TowerUI extends Component {
   private subscriptions: Subscription[] = [];
 
   onLoad() {
-    // Initialize the Coin model and ViewModel
-    const coinModel = new Coin();
-    this.coinViewModel = new CoinViewModel(coinModel);
-
-    const towerModel = new Tower();  // Create the Tower model instance
-    this.towerViewModel = new TowerViewModel(towerModel, this.coinViewModel);
-
-    // Initialize CoinHUDUI with CoinViewModel
-    if (this.hudUi) {
-      this.hudUi.setViewModel(this.coinViewModel);
-    } else {
-      console.warn('CoinHUDUI component is not assigned in TowerUI.');
-    }
-
+      // Access Tower and Coin ViewModels from GameManager
+    this.coinViewModel = gameManager.coinViewModel;
+    this.towerViewModel = gameManager.towerViewModel;
     
     // Fetch heroes.json from resources and load heroes into ViewModel
     resources.load('/settings/heroes', JsonAsset, (err, jsonAsset) => {
