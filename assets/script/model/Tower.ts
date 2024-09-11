@@ -1,8 +1,7 @@
 import { BehaviorSubject, interval, map, takeWhile, timer } from 'rxjs';
-import { Hero } from './hero';
+import { Hero } from './Hero';
 
 export class Tower {
-    public currency$: BehaviorSubject<number>;
     public summonQueue$: BehaviorSubject<Hero[]>;
     public isSummoning$: BehaviorSubject<boolean>;
     public summonProgress$: BehaviorSubject<number>;
@@ -11,7 +10,6 @@ export class Tower {
 
   constructor() {
     // Initialize the observables properly
-    this.currency$ = new BehaviorSubject<number>(1000); // Set default currency value
     this.summonQueue$ = new BehaviorSubject<Hero[]>([]); // Start with an empty summon queue
     this.isSummoning$ = new BehaviorSubject<boolean>(false); // Not summoning initially
     this.summonProgress$ = new BehaviorSubject<number>(0); // Progress from 0 to 1 (0% to 100%)
@@ -36,14 +34,6 @@ export class Tower {
     }
   }
 
-  // Decrease currency after hiring
-  deductCurrency(amount: number) {
-    const currentCurrency = this.currency$.value;
-    if (currentCurrency >= amount) {
-      this.currency$.next(currentCurrency - amount);
-    }
-  }
-
   // Process the queue
   private processQueue() {
     const queue = this.summonQueue$.value;
@@ -55,12 +45,7 @@ export class Tower {
   // Start summoning the hero
   private startSummon(hero: Hero) {
     this.isSummoning$.next(true);
-    // timer(hero.summonCooldown * 1000).subscribe(() => {
-    //   this.completeSummon(hero);
-    // });
-
-
-
+    this.summonProgress$.next(0); // Reset progress bar
 
     const cooldown = hero.summonCooldown;
     const updateInterval = 100; // Update progress every 100ms
