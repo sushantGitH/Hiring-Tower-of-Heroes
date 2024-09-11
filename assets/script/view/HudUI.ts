@@ -3,13 +3,14 @@ import { CoinViewModel } from '../viewModel/CoinViewModel';
 import { Coin } from '../model/Coin';
 import { Subscription } from 'rxjs';
 import { gameManager } from '../manager/GameManager';
+import { Nullable } from '../misc/types';
 
 const { ccclass, property } = _decorator;
 
 @ccclass('HudUI')
 export class HudUI extends Component {
   @property(Label)
-  currencyLabel: Label | null = null;
+  currencyLabel: Nullable<Label> = null;
 
   private coinViewModel!: CoinViewModel;
   private subscription!: Subscription;
