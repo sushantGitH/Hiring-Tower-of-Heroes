@@ -1,4 +1,4 @@
-import { _decorator, Button, Color, Component, EventHandler, instantiate, JsonAsset, Label, Node, ProgressBar, resources, Sprite, UITransform, Vec3 } from 'cc';
+import { _decorator, Button, Color, Component, EventHandler, instantiate, JsonAsset, Label, Node, Prefab, ProgressBar, resources, Sprite, UITransform, Vec3 } from 'cc';
 import { TowerViewModel } from '../viewModel/TowerViewModel';
 import { CoinViewModel } from '../viewModel/CoinViewModel';
 import { Hero } from '../model/Hero';
@@ -23,8 +23,11 @@ export class SummonUI extends Component {
     @property(ProgressBar)
     summonProgress: Nullable<ProgressBar> = null;
 
+    @property(Prefab)
+    heroSummonNode: Nullable<Prefab> = null; 
+
     @property(Node)
-    heroSummonNode: Nullable<Node> = null;  // Container where hero UI elements will be displayed
+    summonPanelNode: Nullable<Node> = null; 
 
     private towerViewModel!: TowerViewModel;
     private coinViewModel!: CoinViewModel;
@@ -74,6 +77,13 @@ export class SummonUI extends Component {
             }
         });
         this.subscriptions.push(isSummoningSub);
+
+
+        // Subscribe to summoning queue
+        const summoningQueueSub = this.towerViewModel.summonQueue$.subscribe((summonQueue) => {
+            debugger
+        });
+        this.subscriptions.push(summoningQueueSub);
     }
 
     fetchHeroList(){
@@ -110,34 +120,33 @@ export class SummonUI extends Component {
       
           heroes.forEach(hero => {
               // Create a new node for each hero
-              const heroNode = instantiate(this.heroSummonNode)
-              const heroNodeCom = heroNode?.getComponent(HeroSummonUI)
-              if(heroNodeCom != null){
-                heroNodeCom.initialiseHero(hero)
-                heroNodeCom.setRank()
-                heroNodeCom.setType()
-            }
-  
-              if(heroNode){
-                  // Add this hero node to the list container
-                  if(this.heroListContainer !== null)
-                    this.heroListContainer.addChild(heroNode);
-                      
-                  // Add Button component for click events
-                  const button = heroNode.addComponent(Button);
+                if (this.heroSummonNode !== null) {
+                    const heroNode = instantiate(this.heroSummonNode)
+                    const heroNodeCom = heroNode.getComponent(HeroSummonUI)
+                    if(heroNodeCom != null){
+                        heroNodeCom.initialiseHero(hero)
+                        heroNodeCom.setRank()
+                        heroNodeCom.setType()
+                    }
+                    // Add this hero node to the list container
+                    if(this.heroListContainer !== null)
+                        this.heroListContainer.addChild(heroNode);
+                        
+                    // Add Button component for click events
+                    const button = heroNode.addComponent(Button);
 
-                  if(button !== null){
-                    // Set up the click event using EventHandler
-                    const clickEventHandler = new EventHandler();
-                    clickEventHandler.target = this.node;  // The node with the callback function
-                    clickEventHandler.component = 'SummonUI';  // Script name where the callback exists
-                    clickEventHandler.handler = 'onHeroSelected';  // Method to call on click
-                    clickEventHandler.customEventData = hero.id;  // Pass hero ID as custom data
-    
-                    // Register the event handler to the button's click events
-                    button.clickEvents.push(clickEventHandler);
-                  }
-              }
+                    if(button !== null){
+                        // Set up the click event using EventHandler
+                        const clickEventHandler = new EventHandler();
+                        clickEventHandler.target = this.node;  // The node with the callback function
+                        clickEventHandler.component = 'SummonUI';  // Script name where the callback exists
+                        clickEventHandler.handler = 'onHeroSelected';  // Method to call on click
+                        clickEventHandler.customEventData = hero.id;  // Pass hero ID as custom data
+        
+                        // Register the event handler to the button's click events
+                        button.clickEvents.push(clickEventHandler);
+                    }
+                }
           });
       }
     }
