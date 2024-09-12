@@ -1,4 +1,4 @@
-import { _decorator, Component, Enum, Node, Sprite, SpriteFrame } from 'cc';
+import { _decorator, Color, Component, Enum, Node, Sprite, SpriteFrame, Tween, tween } from 'cc';
 import { Nullable } from '../misc/types';
 import { HERO_RANK, HERO_TYPE } from '../data/GameData';
 import { Hero } from '../model/Hero';
@@ -40,6 +40,10 @@ export class HeroSummonUI extends Component {
     @property(Sprite)
     typeSprite: Nullable<Sprite> = null
 
+    @property(Sprite)
+    bgFrame: Nullable<Sprite> = null
+
+    private colorTween: Tween<Node> | null = null;  // Store reference to the running tween
     private myData: Nullable<Hero> = null;
 
     initialiseHero(heroData : Hero){
@@ -48,12 +52,32 @@ export class HeroSummonUI extends Component {
         this.node.name = `Hero${this.myData.id}`
     }
 
+    highLightHero(isHighLight : boolean = false){
+        if (isHighLight) 
+            this.startRandomColorTween()
+        else
+            this.stopColorTween()
+    }
+    
+
     setRank(){
         if(this.rankSprite !== null){
             this.rankSprite.spriteFrame = this.getRankFrame()
         }
     }
-    getRankFrame(): SpriteFrame | null {
+    setType(){
+        if(this.typeSprite !== null){
+            this.typeSprite.spriteFrame = this.getTypeFrame()
+        }
+    }
+
+    getHeroId(){
+        if(this.myData)
+            return this.myData.id
+        return null
+    }
+
+    private getRankFrame(): SpriteFrame | null {
         if(this.myData){
             for (const data of this.rankList) {
                 if (HERO_RANK[data.rankType!] === this.myData.rank) {
@@ -63,13 +87,7 @@ export class HeroSummonUI extends Component {
         }
         return null;
     }
-
-    setType(){
-        if(this.typeSprite !== null){
-            this.typeSprite.spriteFrame = this.getTypeFrame()
-        }
-    }
-    getTypeFrame(): SpriteFrame | null {
+    private getTypeFrame(): SpriteFrame | null {
         if(this.myData){
             for (const data of this.typeList) {
                 if (HERO_TYPE[data.heroType!] === this.myData.type) {
@@ -78,6 +96,42 @@ export class HeroSummonUI extends Component {
             }
         }
         return null;
+    }
+
+    private getRandomColor(): Color {
+        return new Color(
+            Math.floor(Math.random() * 256),  // Random R (0-255)
+            Math.floor(Math.random() * 256),  // Random G (0-255)
+            Math.floor(Math.random() * 256),  // Random B (0-255)
+            255  // Full opacity
+        );
+    }
+    
+    private startRandomColorTween() {
+        this.stopColorTween()
+        // Create and store the tween reference
+        if(this.bgFrame !== null){
+            this.colorTween = tween(this.bgFrame.node)
+                .repeatForever(
+                    tween()
+                        .call(() => {
+                            // Generate a random color at each step
+                            const randomColor = this.getRandomColor();
+                            this.bgFrame!.color = randomColor;
+                        })
+                        .to(0.1, { }) // Let the tween happen over 1 second
+                )
+                .start();
+        }
+    }
+
+    private stopColorTween() {
+        // Stop the running tween if it exists
+        if (this.colorTween) {
+            this.colorTween.stop();
+            this.colorTween = null;  // Optionally set to null after stopping
+            this.bgFrame!.color = Color.WHITE
+        }
     }
 }
 

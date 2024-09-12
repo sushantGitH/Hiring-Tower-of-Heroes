@@ -14,9 +14,10 @@ export class SummonUI extends Component {
     
     @property(Node)
     hireButton: Nullable<Node> = null; // The hire button
-
     @property(Label)
     priceCostLabel: Nullable<Label> = null; // The hire button
+    @property(Node)
+    priceLayout: Nullable<Node> = null; // The hire button
 
     @property(Node)
     heroListContainer: Nullable<Node> = null;  // Container where hero UI elements will be displayed
@@ -161,29 +162,33 @@ export class SummonUI extends Component {
       const selectedHero = this.towerViewModel.availableHeroes$.value.find(hero => hero.id === heroId);
   
       if(selectedHero){
+        this.highlightSelectedHero(selectedHero)
+
         this.selectedHero = selectedHero 
   
         // Activate the hire button and update the price cost label
         if(this.hireButton !== null && this.priceCostLabel !== null){
-          this.hireButton.active = true;
-  
-          this.priceCostLabel.string = this.selectedHero.cost.toString();
+            this.hireButton.active = true;
+    
+            this.priceCostLabel.string = this.selectedHero.cost.toString();
+        
+            // Determine if the player has enough currency and queue availability
+            const hasEnoughCurrency = this.coinViewModel.hasEnoughCoins(this.selectedHero.cost);
+            const hasQueueSpace = this.towerViewModel.summonQueue$.value.length < 5;
       
-          // Determine if the player has enough currency and queue availability
-          const hasEnoughCurrency = this.coinViewModel.hasEnoughCoins(this.selectedHero.cost);
-          const hasQueueSpace = this.towerViewModel.summonQueue$.value.length < 5;
-      
   
-          const hireButtonComponent = this.hireButton.getComponent(Button);
-          if (hireButtonComponent) {
-            if (hasEnoughCurrency && hasQueueSpace) {
-              // this.priceCostLabel.node.color = new Color(0, 255, 0); // Green color
-              hireButtonComponent.interactable = true;
-            } else {
-              // this.priceCostLabel.node.color = new Color(255, 0, 0); // Red color
-              hireButtonComponent.interactable = false;
+            const hireButtonComponent = this.hireButton.getComponent(Button);
+            if (hireButtonComponent) {
+                if (hasEnoughCurrency && hasQueueSpace) {
+                    hireButtonComponent.interactable = true;
+                    if(this.priceLayout)
+                        this.priceLayout.active = true
+                } else {
+                    hireButtonComponent.interactable = false;
+                    if(this.priceLayout)
+                        this.priceLayout.active = false
+                }
             }
-          }
   
         }
   
@@ -193,43 +198,42 @@ export class SummonUI extends Component {
     private highlightSelectedHero(hero: Hero) {
       // Implement highlighting logic
       // For example, iterate through all hero buttons and set highlight on selected one
-      if(this.heroListContainer !== null){
-        this.heroListContainer.children.forEach(child => {
-          const spriteNode = child.getComponent(Sprite)
-          if(spriteNode !== null){
-            if (child.name === `Hero${hero.id}`) {
-              // Add highlight (e.g., change background color or show a border)
-              spriteNode.color = new Color(255, 255, 0); // Example: yellow highlight
-            } else {
-              // Remove highlight
-              spriteNode.color = new Color(255, 255, 255); // Default color
-            }
-          }
-        });
-      }
+        if(this.heroListContainer !== null){
+            this.heroListContainer.children.forEach(child => {
+                const heroNodeCom = child.getComponent(HeroSummonUI)
+                if(heroNodeCom != null){
+                    heroNodeCom.highLightHero(heroNodeCom.getHeroId() === hero.id)
+                }
+            });
+        }
     }
 
     private onHireButtonClicked() {
-      if (this.selectedHero) {
-        this.towerViewModel.selectHero(this.selectedHero);
-        // Optionally, reset selection and UI
-        this.resetHeroSelection();
-      }
+        if (this.selectedHero) {
+            this.towerViewModel.selectHero(this.selectedHero);
+            // Optionally, reset selection and UI
+            this.resetHeroSelection();
+        }
     }
   
     private resetHeroSelection() {
-      this.selectedHero = null;
-      if(this.hireButton !== null)
-        this.hireButton.active = false;
-      // this.priceCostLabel.string = '';
-  
-      if(this.heroListContainer !== null){
-        this.heroListContainer.children.forEach(child => {
-          const spriteNode = child.getComponent(Sprite)
-          if(spriteNode !== null)
-              spriteNode.color = new Color(255, 255, 255); // Remove highlight
-        });
-      }
+        this.selectedHero = null;
+        if(this.hireButton !== null){
+            const hireButtonComponent = this.hireButton.getComponent(Button);
+            if (hireButtonComponent)
+                hireButtonComponent.interactable = false;
+            if(this.priceLayout)
+                this.priceLayout.active = false
+        }
+    
+        if(this.heroListContainer !== null){
+            this.heroListContainer.children.forEach(child => {
+                const heroNodeCom = child.getComponent(HeroSummonUI)
+                if(heroNodeCom != null){
+                    heroNodeCom.highLightHero(false)
+                }
+            });
+        }
     }
 
     private updateSummoningQueuUI(summonQueue : Hero[]){
