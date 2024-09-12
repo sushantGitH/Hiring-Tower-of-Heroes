@@ -13,6 +13,10 @@ export class HeroSummoningPanel extends Component {
     @property(HeroSummonUI)
     heroUi: Nullable<HeroSummonUI> = null;
 
+    onLoad() {
+        this.resetPanel(false)
+    }
+
     setHero(heroData : Hero){
         this.resetPanel(true)
 

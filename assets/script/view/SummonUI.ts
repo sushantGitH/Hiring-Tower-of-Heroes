@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { gameManager } from '../manager/GameManager';
 import { Nullable } from '../misc/types';
 import { HeroSummonUI } from './HeroSummonUI';
+import { HeroSummoningPanel } from './HeroSummoningPanel';
 const { ccclass, property } = _decorator;
 
 @ccclass('SummonUI')
@@ -28,6 +29,9 @@ export class SummonUI extends Component {
 
     @property(Node)
     summonPanelNode: Nullable<Node> = null; 
+
+    @property(Node)
+    summonQueuePanelNode: Nullable<Node[]> = []; 
 
     private towerViewModel!: TowerViewModel;
     private coinViewModel!: CoinViewModel;
@@ -81,12 +85,12 @@ export class SummonUI extends Component {
 
         // Subscribe to summoning queue
         const summoningQueueSub = this.towerViewModel.summonQueue$.subscribe((summonQueue) => {
-            debugger
+            this.updateSummoningQueuUI(summonQueue)
         });
         this.subscriptions.push(summoningQueueSub);
     }
 
-    fetchHeroList(){
+    private fetchHeroList(){
         // Fetch heroes.json from resources and load heroes into ViewModel
         resources.load('/settings/heroes', JsonAsset, (err, jsonAsset) => {
             if (err) {
@@ -112,7 +116,7 @@ export class SummonUI extends Component {
         });
     }
 
-    renderHeroList(heroes: Hero[]) {
+    private renderHeroList(heroes: Hero[]) {
       if(this.heroListContainer !== null && this.heroSummonNode !== null)
       {
           // Clear existing list
@@ -151,7 +155,7 @@ export class SummonUI extends Component {
       }
     }
   
-    onHeroSelected(ref: any, heroId: string) {
+    private onHeroSelected(ref: any, heroId: string) {
   
       // Update selectedHero
       const selectedHero = this.towerViewModel.availableHeroes$.value.find(hero => hero.id === heroId);
@@ -226,6 +230,28 @@ export class SummonUI extends Component {
               spriteNode.color = new Color(255, 255, 255); // Remove highlight
         });
       }
+    }
+
+    private updateSummoningQueuUI(summonQueue : Hero[]){
+        if(this.summonQueuePanelNode !== null){
+            for (let i = 0; i < summonQueue.length; i++) {
+                const summonNode = this.summonQueuePanelNode[i].getComponent(HeroSummoningPanel)
+                if(summonNode){
+                    summonNode.setHero(summonQueue[i])
+                }
+            }
+
+
+            for (let i = 0; i < this.summonQueuePanelNode.length; i++) {
+                const summonNode = this.summonQueuePanelNode[i].getComponent(HeroSummoningPanel)
+                if(summonNode){
+                    if(summonQueue[i])
+                        summonNode.setHero(summonQueue[i])
+                    else
+                        summonNode.resetPanel(false)
+                }
+            }
+        }
     }
 
     onDestroy() {

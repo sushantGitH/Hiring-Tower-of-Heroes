@@ -3398,6 +3398,23 @@
     "summonPanelNode": {
       "__id__": 38
     },
+    "summonQueuePanelNode": [
+      {
+        "__id__": 39
+      },
+      {
+        "__id__": 47
+      },
+      {
+        "__id__": 55
+      },
+      {
+        "__id__": 63
+      },
+      {
+        "__id__": 71
+      }
+    ],
     "_id": "3cKRFsJjNLbY8C2WvBDR4H"
   },
   {
