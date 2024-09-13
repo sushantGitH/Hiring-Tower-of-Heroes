@@ -2,6 +2,9 @@ import { _decorator, Color, Component, Enum, Node, Sprite, SpriteFrame, Tween, t
 import { Nullable } from '../misc/types';
 import { HERO_RANK, HERO_TYPE } from '../data/GameData';
 import { Hero } from '../model/Hero';
+import {gsap, Linear} from "gsap-cc3";
+import { getVec3 } from '../misc/temporary';
+import { GsapUtils } from '../utils/gsap-utils';
 
 const { ccclass, property } = _decorator;
 
@@ -43,7 +46,7 @@ export class HeroSummonUI extends Component {
     @property(Sprite)
     bgFrame: Nullable<Sprite> = null
 
-    private colorTween: Tween<Node> | null = null;  // Store reference to the running tween
+    private colorTween: Nullable<gsap.core.Timeline> = null
     private myData: Nullable<Hero> = null;
 
     initialiseHero(heroData : Hero){
@@ -109,27 +112,50 @@ export class HeroSummonUI extends Component {
     
     private startRandomColorTween() {
         this.stopColorTween()
-        // Create and store the tween reference
-        if(this.bgFrame !== null){
-            this.colorTween = tween(this.bgFrame.node)
-                .repeatForever(
-                    tween()
-                        .call(() => {
-                            // Generate a random color at each step
-                            const randomColor = this.getRandomColor();
-                            this.bgFrame!.color = randomColor;
-                        })
-                        .to(0.1, { }) // Let the tween happen over 1 second
-                )
-                .start();
+        // // Create and store the tween reference
+        // if(this.bgFrame !== null){
+        //     this.colorTween = tween(this.bgFrame.node)
+        //         .repeatForever(
+        //             tween()
+        //                 .call(() => {
+        //                     // Generate a random color at each step
+        //                     const randomColor = this.getRandomColor();
+        //                     this.bgFrame!.color = randomColor;
+        //                 })
+        //                 .to(0.1, { }) // Let the tween happen over 1 second
+        //         )
+        //         .start();
+        // }
+
+        if (this.bgFrame) {
+            if (this.colorTween === null) {
+                // Create a GSAP timeline
+                this.colorTween = gsap.timeline({ repeat: -1, yoyo: true });
+    
+                this.colorTween
+                    .add(() => {
+                        // Generate a random color
+                        const randomColor = this.getRandomColor();
+                        if(this.bgFrame !== null)
+                            this.bgFrame.color = randomColor;
+                    })
+                    .to(this.bgFrame, {
+                        duration: 0.1,
+                        onUpdate: () => {
+                            if(this.bgFrame !== null)
+                                this.bgFrame.color = this.bgFrame.color;
+                        }
+                    });
+            } else {
+                this.colorTween.restart()
+            }
         }
     }
 
     private stopColorTween() {
         // Stop the running tween if it exists
         if (this.colorTween) {
-            this.colorTween.stop();
-            this.colorTween = null;  // Optionally set to null after stopping
+            this.colorTween.pause();
             this.bgFrame!.color = Color.WHITE
         }
     }

@@ -3,10 +3,12 @@ import { Coin } from '../model/Coin';
 
 export class CoinViewModel {
     public currentCurrency$: BehaviorSubject<number>;
+    public deductCoinCurrency$: BehaviorSubject<number>;
 
     constructor(private coin: Coin) {
         // Initialize the currentCurrency$ after coin is initialized
         this.currentCurrency$ = this.coin.currency$;
+        this.deductCoinCurrency$ = this.coin.deductCoinCurrency$;
     }
 
     // Add coins
@@ -17,7 +19,7 @@ export class CoinViewModel {
     // Deduct coins
     deductCoins(amount: number) {
         if (this.coin.hasEnoughCoins(amount)) {
-        this.coin.deductCoins(amount);
+            this.coin.deductCoins(amount);
         }
     }
 
