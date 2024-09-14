@@ -112,21 +112,6 @@ export class HeroSummonUI extends Component {
     
     private startRandomColorTween() {
         this.stopColorTween()
-        // // Create and store the tween reference
-        // if(this.bgFrame !== null){
-        //     this.colorTween = tween(this.bgFrame.node)
-        //         .repeatForever(
-        //             tween()
-        //                 .call(() => {
-        //                     // Generate a random color at each step
-        //                     const randomColor = this.getRandomColor();
-        //                     this.bgFrame!.color = randomColor;
-        //                 })
-        //                 .to(0.1, { }) // Let the tween happen over 1 second
-        //         )
-        //         .start();
-        // }
-
         if (this.bgFrame) {
             if (this.colorTween === null) {
                 // Create a GSAP timeline
