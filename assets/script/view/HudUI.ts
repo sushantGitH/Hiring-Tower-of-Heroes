@@ -86,29 +86,6 @@ export class HudUI extends Component {
       } else {
           this.tWinNode.restart()
       }
-
-
-      // Create the GSAP animation
-      // gsap.timeline()
-      //     // Tween from current position to target position over 2 seconds
-      //     .to(this.currencyDupLabel, {
-      //         duration: 2, 
-      //         x: endPos.x,
-      //         y: endPos.y,
-      //         ease: "power1.inOut" // Easing for smooth transition
-      //     })
-          // // Animate opacity from 1 to 255 over 1 second
-          // .to(this.currencyDupLabel, {
-          //     duration: 1, 
-          //     opacity: 255,
-          //     ease: "power1.inOut"
-          // }, 0) // Start at the same time as the position animation
-          // // Tween opacity from 255 to 0 after reaching the destination
-          // .to(this.currencyDupLabel, {
-          //     duration: 1, 
-          //     opacity: 0,
-          //     ease: "power1.inOut"
-          // });
     }
   }
 

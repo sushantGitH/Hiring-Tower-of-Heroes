@@ -1,16 +1,24 @@
-import { _decorator, Button, Color, Component, EventHandler, instantiate, JsonAsset, Label, Node, Prefab, ProgressBar, resources, Sprite, UITransform, Vec3 } from 'cc';
+import { _decorator, Button, Color, Component, EventHandler, instantiate, JsonAsset, Label, Node, Prefab, ProgressBar, resources, Sprite, UITransform, Vec3, view, View } from 'cc';
 import { TowerViewModel } from '../viewModel/TowerViewModel';
 import { CoinViewModel } from '../viewModel/CoinViewModel';
 import { Hero } from '../model/Hero';
 import { Subscription } from 'rxjs';
 import { gameManager } from '../manager/GameManager';
-import { Nullable } from '../misc/types';
 import { HeroSummonUI } from './HeroSummonUI';
 import { HeroSummoningPanel } from './HeroSummoningPanel';
+import { SummonViewModel } from '../viewModel/SummonViewModel';
+import { Nullable } from '../misc/types';
+import {gsap, Linear} from "gsap-cc3";
+import { getVec3 } from '../misc/temporary';
+import { GsapUtils } from '../utils/gsap-utils';
+
 const { ccclass, property } = _decorator;
 
 @ccclass('SummonUI')
 export class SummonUI extends Component {
+
+    @property(Node)
+    touchLayer: Nullable<Node> = null; 
     
     @property(Node)
     hireButton: Nullable<Node> = null; // The hire button
@@ -34,17 +42,40 @@ export class SummonUI extends Component {
     @property(Node)
     summonQueuePanelNode: Nullable<Node[]> = []; 
 
+    private showPosition = Vec3.ZERO.clone()
+    private hidePosition = Vec3.ZERO.clone()
+
     private towerViewModel!: TowerViewModel;
     private coinViewModel!: CoinViewModel;
+    private summonViewModel!: SummonViewModel;
 
     private selectedHero: Nullable<Hero> = null;
 
     private subscriptions: Subscription[] = [];
 
+    private tWinNode: Nullable<gsap.core.Timeline> = null
+
     onLoad() {
+
+        // Get the visible screen height
+        const screenHeight = view.getVisibleSize().height;
+        // Get the sprite's UITransform component to work with position
+        const spriteTransform = this.node.getComponent(UITransform);
+        if (spriteTransform) {
+            // Set the y position to the negative half of the screen height (placing it at the bottom)
+            const spriteHeight = spriteTransform.contentSize.height;
+
+            this.showPosition = new Vec3(0, -(screenHeight / 2) + (spriteHeight / 2), 0);
+            this.hidePosition = new Vec3(0, -(screenHeight / 2) - (spriteHeight / 2), 0);
+
+            // Set the new position of the sprite
+            this.node.setPosition(this.showPosition);
+        }
+
         // Access Tower and Coin ViewModels from GameManager
         this.coinViewModel = gameManager.coinViewModel;
         this.towerViewModel = gameManager.towerViewModel;
+        this.summonViewModel = gameManager.summonViewModel;
 
         this.fetchHeroList()
 
@@ -89,6 +120,13 @@ export class SummonUI extends Component {
             this.updateSummoningQueuUI(summonQueue)
         });
         this.subscriptions.push(summoningQueueSub);
+
+
+        // Subscribe to hero list updates and render heroes
+        const popupAvailabilitySub = this.summonViewModel.popupVisibility$.subscribe((popupVisibility) => {
+            this.showPopup(popupVisibility)
+          });
+        this.subscriptions.push(popupAvailabilitySub);
     }
 
     private fetchHeroList(){
@@ -256,6 +294,28 @@ export class SummonUI extends Component {
                 }
             }
         }
+    }
+
+    private onCloseClicked(){
+        this.summonViewModel.showPopup()
+    }
+
+    private showPopup(toBeShown : boolean = false){
+        this.resetHeroSelection()
+        const t = gsap.timeline({})
+
+        const from = getVec3().set(this.node.position)
+        const endPos = toBeShown ? getVec3().set(this.showPosition) : getVec3().set(this.hidePosition) 
+        t.add(GsapUtils.ToVec3(from, endPos, this.node.setPosition, this.node, {
+            duration: 0.5,
+            ease: Linear.easeNone,
+            onComplete: () => {
+                this.summonViewModel.resetPopupAnimating()
+                if(this.touchLayer !== null)
+                    this.touchLayer.active = toBeShown
+            },
+            callbackScope: this
+        }))
     }
 
     onDestroy() {

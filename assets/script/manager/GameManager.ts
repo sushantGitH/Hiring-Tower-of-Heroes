@@ -1,6 +1,8 @@
 import { Coin } from "../model/Coin";
+import { Summon } from "../model/Summon";
 import { Tower } from "../model/Tower";
 import { CoinViewModel } from "../viewModel/CoinViewModel";
+import { SummonViewModel } from "../viewModel/SummonViewModel";
 import { TowerViewModel } from "../viewModel/TowerViewModel";
 
 class GameManager {
@@ -9,19 +11,23 @@ class GameManager {
   // Models
   public coinModel: Coin;
   public towerModel: Tower;
+  public summonModel: Summon;
 
   // ViewModels
   public coinViewModel: CoinViewModel;
   public towerViewModel: TowerViewModel;
+  public summonViewModel: SummonViewModel;
 
   private constructor() {
     // Initialize the models
     this.coinModel = new Coin();
     this.towerModel = new Tower();
+    this.summonModel = new Summon();
 
     // Initialize the ViewModels
     this.coinViewModel = new CoinViewModel(this.coinModel);
     this.towerViewModel = new TowerViewModel(this.towerModel, this.coinViewModel);
+    this.summonViewModel = new SummonViewModel(this.summonModel);
   }
 
   // Singleton pattern to ensure only one instance of GameManager exists
@@ -38,6 +44,7 @@ class GameManager {
     this.towerModel = new Tower();
     this.coinViewModel = new CoinViewModel(this.coinModel);
     this.towerViewModel = new TowerViewModel(this.towerModel, this.coinViewModel);
+    this.summonViewModel = new SummonViewModel(this.summonModel);
   }
 }
 
