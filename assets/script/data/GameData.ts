@@ -12,3 +12,11 @@ export enum HERO_RANK {
     c,
     d
 }
+export enum HERO_IMG {
+    hero_1 = 0,
+    hero_2,
+    hero_3,
+    hero_4,
+    hero_5,
+    hero_6
+}

@@ -44,7 +44,7 @@
       }
     ],
     "_prefab": {
-      "__id__": 47
+      "__id__": 53
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -848,6 +848,26 @@
         "__id__": 46
       }
     ],
+    "heroList": [
+      {
+        "__id__": 47
+      },
+      {
+        "__id__": 48
+      },
+      {
+        "__id__": 49
+      },
+      {
+        "__id__": 50
+      },
+      {
+        "__id__": 51
+      },
+      {
+        "__id__": 52
+      }
+    ],
     "heroSprite": {
       "__id__": 19
     },
@@ -935,6 +955,54 @@
     "heroType": 3,
     "typeFrame": {
       "__uuid__": "e5277a16-b8ca-4802-b199-7e63bf8505fe@f9941",
+      "__expectedType__": "cc.SpriteFrame"
+    }
+  },
+  {
+    "__type__": "HeroImg",
+    "heroImg": 0,
+    "typeFrame": {
+      "__uuid__": "3500d9a3-e595-49c0-acc9-5d5de05d4249@f9941",
+      "__expectedType__": "cc.SpriteFrame"
+    }
+  },
+  {
+    "__type__": "HeroImg",
+    "heroImg": 1,
+    "typeFrame": {
+      "__uuid__": "ab29469a-6c60-4b4d-a4b1-55673833d8c2@f9941",
+      "__expectedType__": "cc.SpriteFrame"
+    }
+  },
+  {
+    "__type__": "HeroImg",
+    "heroImg": 2,
+    "typeFrame": {
+      "__uuid__": "70ffc48e-e155-4f87-a53b-ac552de530de@f9941",
+      "__expectedType__": "cc.SpriteFrame"
+    }
+  },
+  {
+    "__type__": "HeroImg",
+    "heroImg": 3,
+    "typeFrame": {
+      "__uuid__": "137e72e2-9551-4b64-b9d5-ca774d3acb23@f9941",
+      "__expectedType__": "cc.SpriteFrame"
+    }
+  },
+  {
+    "__type__": "HeroImg",
+    "heroImg": 4,
+    "typeFrame": {
+      "__uuid__": "ca3e08f9-81c7-4bb8-8d92-5ef3fbe12a0e@f9941",
+      "__expectedType__": "cc.SpriteFrame"
+    }
+  },
+  {
+    "__type__": "HeroImg",
+    "heroImg": 5,
+    "typeFrame": {
+      "__uuid__": "c0bde77d-334a-4921-b968-b86de9c11011@f9941",
       "__expectedType__": "cc.SpriteFrame"
     }
   },

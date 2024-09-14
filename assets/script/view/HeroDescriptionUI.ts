@@ -29,8 +29,6 @@ export class HeroDescriptionUI extends Component {
 
         if(this.heroUi != null){
             this.heroUi.initialiseHero(heroData)
-            this.heroUi.setRank()
-            this.heroUi.setType()
         }
 
         if(this.heroNameLabel !== null && heroData.name)

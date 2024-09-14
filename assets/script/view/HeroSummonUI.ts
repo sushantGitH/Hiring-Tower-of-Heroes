@@ -1,6 +1,6 @@
 import { _decorator, Color, Component, Enum, Node, Sprite, SpriteFrame, Tween, tween } from 'cc';
 import { Nullable } from '../misc/types';
-import { HERO_RANK, HERO_TYPE } from '../data/GameData';
+import { HERO_IMG, HERO_RANK, HERO_TYPE } from '../data/GameData';
 import { Hero } from '../model/Hero';
 import {gsap, Linear} from "gsap-cc3";
 import { getVec3 } from '../misc/temporary';
@@ -25,6 +25,14 @@ class HeroType {
     @property(SpriteFrame)
     typeFrame: Nullable<SpriteFrame> = null
 }
+@ccclass('HeroImg')
+class HeroImg {
+    @property({ type: Enum(HERO_IMG) })
+    heroImg: Nullable<HERO_IMG> = HERO_IMG.hero_1;  // Allow selecting HERO_RANK values in the editor
+
+    @property(SpriteFrame)
+    typeFrame: Nullable<SpriteFrame> = null
+}
 
 @ccclass('HeroSummonUI')
 export class HeroSummonUI extends Component {
@@ -33,6 +41,9 @@ export class HeroSummonUI extends Component {
 
     @property(HeroType)
     typeList: HeroType[] = []; 
+
+    @property(HeroImg)
+    heroList: HeroImg[] = []; 
 
     @property(Sprite)
     heroSprite: Nullable<Sprite> = null
@@ -53,6 +64,10 @@ export class HeroSummonUI extends Component {
         this.myData = heroData
 
         this.node.name = `Hero${this.myData.id}`
+        
+        this.setHeroImg()
+        this.setRank()
+        this.setType()
     }
 
     highLightHero(isHighLight : boolean = false){
@@ -71,6 +86,11 @@ export class HeroSummonUI extends Component {
     setType(){
         if(this.typeSprite !== null){
             this.typeSprite.spriteFrame = this.getTypeFrame()
+        }
+    }
+    setHeroImg(){
+        if(this.heroSprite !== null){
+            this.heroSprite.spriteFrame = this.getHeroFrame()
         }
     }
 
@@ -94,6 +114,16 @@ export class HeroSummonUI extends Component {
         if(this.myData){
             for (const data of this.typeList) {
                 if (HERO_TYPE[data.heroType!] === this.myData.type) {
+                    return data.typeFrame;
+                }
+            }
+        }
+        return null;
+    }
+    private getHeroFrame(): SpriteFrame | null {
+        if(this.myData){
+            for (const data of this.heroList) {
+                if (HERO_IMG[data.heroImg!] === this.myData.id) {
                     return data.typeFrame;
                 }
             }

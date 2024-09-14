@@ -22,8 +22,6 @@ export class HeroSummoningPanel extends Component {
 
         if(this.heroUi != null){
             this.heroUi.initialiseHero(heroData)
-            this.heroUi.setRank()
-            this.heroUi.setType()
         }
     }
 

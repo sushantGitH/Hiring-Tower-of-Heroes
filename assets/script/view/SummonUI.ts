@@ -171,8 +171,6 @@ export class SummonUI extends Component {
                     const heroNodeCom = heroNode.getComponent(HeroSummonUI)
                     if(heroNodeCom != null){
                         heroNodeCom.initialiseHero(hero)
-                        heroNodeCom.setRank()
-                        heroNodeCom.setType()
                     }
                     // Add this hero node to the list container
                     if(this.heroListContainer !== null)
