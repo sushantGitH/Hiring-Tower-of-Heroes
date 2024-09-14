@@ -1,4 +1,5 @@
 import { Coin } from "../model/Coin";
+import { HeroSelection } from "../model/HeroSelection";
 import { Summon } from "../model/Summon";
 import { Tower } from "../model/Tower";
 import { CoinViewModel } from "../viewModel/CoinViewModel";
@@ -17,6 +18,7 @@ class GameManager {
   public coinViewModel: CoinViewModel;
   public towerViewModel: TowerViewModel;
   public summonViewModel: SummonViewModel;
+  public heroSelection: HeroSelection;
 
   private constructor() {
     // Initialize the models
@@ -28,6 +30,7 @@ class GameManager {
     this.coinViewModel = new CoinViewModel(this.coinModel);
     this.towerViewModel = new TowerViewModel(this.towerModel, this.coinViewModel);
     this.summonViewModel = new SummonViewModel(this.summonModel);
+    this.heroSelection = new HeroSelection();
   }
 
   // Singleton pattern to ensure only one instance of GameManager exists

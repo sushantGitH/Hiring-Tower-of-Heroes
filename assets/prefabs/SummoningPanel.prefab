@@ -756,6 +756,9 @@
     "typeSprite": {
       "__id__": 24
     },
+    "bgFrame": {
+      "__id__": 6
+    },
     "_id": ""
   },
   {
@@ -1254,6 +1257,7 @@
       "__id__": 0
     },
     "fileId": "edztsANIhNj4Qaf5WV5UW1",
+    "instance": null,
     "targetOverrides": null
   }
 ]

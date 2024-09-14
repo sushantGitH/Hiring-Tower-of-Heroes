@@ -11,6 +11,7 @@ import { Nullable } from '../misc/types';
 import {gsap, Linear} from "gsap-cc3";
 import { getVec3 } from '../misc/temporary';
 import { GsapUtils } from '../utils/gsap-utils';
+import { HeroSelection } from '../model/HeroSelection';
 
 const { ccclass, property } = _decorator;
 
@@ -48,6 +49,7 @@ export class SummonUI extends Component {
     private towerViewModel!: TowerViewModel;
     private coinViewModel!: CoinViewModel;
     private summonViewModel!: SummonViewModel;
+    private heroselectionModel!: HeroSelection;
 
     private selectedHero: Nullable<Hero> = null;
 
@@ -76,6 +78,7 @@ export class SummonUI extends Component {
         this.coinViewModel = gameManager.coinViewModel;
         this.towerViewModel = gameManager.towerViewModel;
         this.summonViewModel = gameManager.summonViewModel;
+        this.heroselectionModel = gameManager.heroSelection;
 
         this.fetchHeroList()
 
@@ -195,11 +198,14 @@ export class SummonUI extends Component {
     }
   
     private onHeroSelected(ref: any, heroId: string) {
-  
+
       // Update selectedHero
       const selectedHero = this.towerViewModel.availableHeroes$.value.find(hero => hero.id === heroId);
   
       if(selectedHero){
+  
+        this.heroselectionModel.showPopup(selectedHero);
+
         this.highlightSelectedHero(selectedHero)
 
         this.selectedHero = selectedHero 
@@ -256,6 +262,7 @@ export class SummonUI extends Component {
   
     private resetHeroSelection() {
         this.selectedHero = null;
+        this.heroselectionModel.hidePopup();
         if(this.hireButton !== null){
             const hireButtonComponent = this.hireButton.getComponent(Button);
             if (hireButtonComponent)
