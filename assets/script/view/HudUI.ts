@@ -53,7 +53,7 @@ export class HudUI extends Component {
   animateDupLabel(currencyDiff : number = 0){
     if(this.currencyDupLabel !== null && this.currencyLabel !== null){
 
-      this.currencyDupLabel.setPosition(new Vec3(100,0,0))
+      this.currencyDupLabel.setPosition(new Vec3(0,0,0))
       let labelOpabityComponent = this.currencyDupLabel.getComponent(UIOpacity)
       if(labelOpabityComponent == null)
         labelOpabityComponent = this.currencyDupLabel.addComponent(UIOpacity)
@@ -67,7 +67,7 @@ export class HudUI extends Component {
             this.tWinNode = gsap.timeline({})
 
             const from = getVec3().set(this.currencyDupLabel.position)
-            const endPos = getVec3().set(new Vec3(from.x+100, from.y ,0))
+            const endPos = getVec3().set(new Vec3(from.x, from.y+100 ,0))
 
             this.tWinNode.add(GsapUtils.ToVec3(from, endPos, this.currencyDupLabel.setPosition, this.currencyDupLabel, {
                 duration: 0.5,
