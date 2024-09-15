@@ -67,11 +67,6 @@ export class TowerUI extends Component {
               const heroSelComp = this.herDescUi.getComponent(HeroDescriptionUI)
               if(heroSelComp !== null)
                 heroSelComp.setHero(heroData)
-
-              // // Set hero data in the popup UI (e.g., show hero name)
-              // if (this.heroNameLabel) {
-              //     this.heroNameLabel.string = heroData.name;
-              // }
           } else {
               this.herDescUi.active = false;  // Deactivate popup
           }

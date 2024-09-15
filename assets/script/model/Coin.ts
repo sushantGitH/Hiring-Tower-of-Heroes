@@ -10,23 +10,6 @@ export class Coin {
     // this.currency$ = new BehaviorSubject<number>(initialCurrency);
   }
 
-
-
-
-  private fetchInitialData(){
-    // Fetch heroes.json from resources and load heroes into ViewModel
-    resources.load('/settings/initial_state', JsonAsset, (err, jsonAsset) => {
-        if (err) {
-          console.error("Failed to load initial_state.json:", err);
-          return;
-        }
-  
-        if(jsonAsset && jsonAsset.json){
-            const heroesData = jsonAsset.json['state'];
-        }
-    });
-  }
-
   // Update coins
   updateCoins(amount: number) {
     this.currency$.next(amount);

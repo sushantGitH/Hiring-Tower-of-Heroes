@@ -9,7 +9,7 @@ export class Summon {
     }
 
     togglePopup(){
-        const shown = !this.popupVisibility$.getValue();  // Use getValue() to retrieve the current value
+        const shown = !this.popupVisibility$.getValue();
         this.popupVisibility$.next(shown);
     }
 }
