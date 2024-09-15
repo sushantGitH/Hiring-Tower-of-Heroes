@@ -1,12 +1,11 @@
 import { _decorator, Component, instantiate, Label, Node, UIOpacity, Vec3 } from 'cc';
-import { CoinViewModel } from '../viewModel/CoinViewModel';
-import { Coin } from '../model/Coin';
 import { Subscription } from 'rxjs';
-import { gameManager } from '../manager/GameManager';
-import { Nullable } from '../misc/types';
+import { Nullable } from '../../misc/types';
+import { CoinViewModel } from '../../viewModel/CoinViewModel';
+import { gameManager } from '../../manager/GameManager';
+import { getVec3 } from '../../misc/temporary';
+import { GsapUtils } from '../../utils/gsap-utils';
 import {gsap, Linear} from "gsap-cc3";
-import { getVec3 } from '../misc/temporary';
-import { GsapUtils } from '../utils/gsap-utils';
 
 const { ccclass, property } = _decorator;
 

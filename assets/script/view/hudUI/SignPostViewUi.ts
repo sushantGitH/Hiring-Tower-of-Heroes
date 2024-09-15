@@ -1,10 +1,10 @@
 import { _decorator, Component, instantiate, Node, Prefab } from 'cc';
-import { Nullable } from '../misc/types';
-import { SignpostViewModel } from '../viewModel/SignPostViewModel';
 import { Subscription } from 'rxjs';
-import { gameManager } from '../manager/GameManager';
-import { Hero } from '../model/Hero';
-import { HeroDescriptionUI } from './HeroDescriptionUI';
+import { Nullable } from '../../misc/types';
+import { SignpostViewModel } from '../../viewModel/SignPostViewModel';
+import { gameManager } from '../../manager/GameManager';
+import { HeroDescriptionUI } from '../HeroDescriptionUI';
+import { Hero } from '../../model/Hero';
 
 const { ccclass, property } = _decorator;
 

@@ -1,9 +1,8 @@
 import { _decorator, Component, Label, Node } from 'cc';
-import { Nullable } from '../misc/types';
-import { SignpostViewModel } from '../viewModel/SignPostViewModel';
-import { gameManager } from '../manager/GameManager';
-import { Hero } from '../model/Hero';
 import { combineLatest, Subscription } from 'rxjs';
+import { Nullable } from '../../misc/types';
+import { SignpostViewModel } from '../../viewModel/SignPostViewModel';
+import { gameManager } from '../../manager/GameManager';
 
 const { ccclass, property } = _decorator;
 
@@ -22,12 +21,6 @@ export class SignpostUI extends Component {
     onLoad() {
         // Assuming GameManager has a reference to the SignpostViewModel
         this.signPostViewModel = gameManager.signpostViewModel;
-
-        // Subscribe to summoned heroes list changes
-        this.signPostViewModel.summonedHeroes$.subscribe((heroes) => {
-            this.updateHeroesList(heroes);
-        });
-
 
         // Spread the observables as individual arguments
         const combinedSubscription = combineLatest(
@@ -55,21 +48,6 @@ export class SignpostUI extends Component {
         this.signPostViewModel.toggleSignPostButton()
     }
 
-    // Update the heroes list in the scroll view
-    updateHeroesList(heroes: Array<Hero>) {
-        // // Clear the current content
-        // this.heroesScrollView.content.removeAllChildren();
-
-        // // Add each hero as a new item in the scroll view
-        // heroes.forEach((heroName) => {
-        //     const heroItem = instantiate(this.heroItemPrefab);
-        //     const heroLabel = heroItem.getComponent(Label);
-        //     if (heroLabel) {
-        //         heroLabel.string = heroName;
-        //     }
-        //     this.heroesScrollView.content.addChild(heroItem);
-        // });
-    }
     onDestroy() {
       // Clean up subscriptions
       this.subscriptions.forEach(sub => sub.unsubscribe());
