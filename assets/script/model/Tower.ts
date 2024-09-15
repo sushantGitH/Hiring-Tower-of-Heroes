@@ -1,19 +1,20 @@
-import { BehaviorSubject, interval, map, takeWhile, timer } from 'rxjs';
+import { BehaviorSubject, interval, map, Subject, takeWhile, timer } from 'rxjs';
 import { Hero } from './Hero';
 
 export class Tower {
     public summonQueue$: BehaviorSubject<Hero[]>;
     public isSummoning$: BehaviorSubject<boolean>;
     public summonProgress$: BehaviorSubject<number>;
+    public heroSummoned$: Subject<Hero>; // Create a subject to emit summoned heroes
 
-  private currentSummon$ = new BehaviorSubject<Hero | null>(null);
+    private currentSummon$ = new BehaviorSubject<Hero | null>(null);
 
   constructor() {
     // Initialize the observables properly
     this.summonQueue$ = new BehaviorSubject<Hero[]>([]); // Start with an empty summon queue
     this.isSummoning$ = new BehaviorSubject<boolean>(false); // Not summoning initially
     this.summonProgress$ = new BehaviorSubject<number>(0); // Progress from 0 to 1 (0% to 100%)
-
+    this.heroSummoned$ = new Subject<Hero>(); // Initialize the subject
         
     // Automatically process the queue when a summon is completed
     this.currentSummon$.subscribe(hero => {
@@ -70,6 +71,10 @@ export class Tower {
     const updatedQueue = this.summonQueue$.value.slice(1);
     this.summonQueue$.next(updatedQueue);
     this.currentSummon$.next(null);
+
+    // Emit the summoned hero event instead of directly calling addHeroToSignpost
+    this.heroSummoned$.next(hero);
+
     if (updatedQueue.length > 0) {
       this.processQueue();
     }
